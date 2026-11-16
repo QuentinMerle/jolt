@@ -1572,6 +1572,10 @@ export function buildJoltHudScript(): string {
       this.refreshView();
     }
 
+    setExpanded(open) {
+      this.#setExpanded(!!open);
+    }
+
     refreshView() {
       const gl = getWebGLSnapshot();
       const events = getFlightTimeline();

@@ -1,4 +1,4 @@
-import { JOLT_ROUTES } from '../shared/constants.ts';
+import { JOLT_HUD_TAG, JOLT_ROUTES } from '../shared/constants.ts';
 import type { JoltPluginOptions } from '../shared/types.ts';
 import { buildDomInspectorScript } from './dom-inspector.ts';
 import { buildFlightRecorderScript } from './flight-recorder.ts';
@@ -11,8 +11,12 @@ import { buildWebGLProbeScript } from './webgl-probe.ts';
  * Wires SSE push commands (Pull-on-Demand digest, live inspection, mutations, mocks)
  * and exposes `window.__JOLT__` for stores & 3D scene registration.
  */
-export function buildProbeBundle(sessionToken: string, options: JoltPluginOptions = {}): string {
+export function buildProbeBundle(
+  sessionToken: string,
+  options: JoltPluginOptions & { staticDemo?: boolean } = {},
+): string {
   const tokenLiteral = JSON.stringify(sessionToken);
+  const staticDemo = options.staticDemo === true;
   const webglEnabled = options.webgl !== false;
   const pick3DEnabled = typeof options.webgl === 'object' ? options.webgl.pick3D !== false : webglEnabled;
   const mocksEnabled = options.networkMocks !== false;
@@ -23,12 +27,13 @@ export function buildProbeBundle(sessionToken: string, options: JoltPluginOption
   window.__JOLT_INITIALIZED__ = true;
 
   const JOLT_TOKEN = ${tokenLiteral};
+  const JOLT_STATIC_DEMO = ${staticDemo};
   const registeredStores = new Map();
   let bgReportTimer = null;
 
   ${buildFlightRecorderScript()}
   ${buildDomInspectorScript()}
-  ${buildNetworkInterceptorScript(mocksEnabled)}
+  ${buildNetworkInterceptorScript(mocksEnabled, staticDemo)}
   ${buildWebGLProbeScript({ enabled: webglEnabled, pick3D: pick3DEnabled })}
   ${buildJoltHudScript()}
 
@@ -61,6 +66,7 @@ export function buildProbeBundle(sessionToken: string, options: JoltPluginOption
   }
 
   async function postReport(body) {
+    if (JOLT_STATIC_DEMO) return;
     try {
       await origFetch('${JOLT_ROUTES.CLIENT_REPORT}', {
         method: 'POST',
@@ -84,6 +90,14 @@ export function buildProbeBundle(sessionToken: string, options: JoltPluginOption
   }
 
   async function submitPinnedElement(pinned) {
+    if (JOLT_STATIC_DEMO) {
+      if (pinned && pinned.note === '[STOP_LIVE]') {
+        setHudAgentStatus('done', 'Listening stopped — control returned');
+      } else {
+        setHudAgentStatus('done', 'Pin captured locally (connect jolt-mcp in your repo to stream to IDE)');
+      }
+      return;
+    }
     await postReport({ kind: 'pin', data: pinned });
   }
 
@@ -132,11 +146,11 @@ export function buildProbeBundle(sessionToken: string, options: JoltPluginOption
   }
 
   // Pull-on-Demand SSE channel from dev server -> browser
-  const evtSource = new EventSource('${JOLT_ROUTES.EVENTS}');
+  const evtSource = JOLT_STATIC_DEMO ? null : new EventSource('${JOLT_ROUTES.EVENTS}');
   let lastReplyToast = '';
   let lastReplyAt = 0;
 
-  evtSource.addEventListener('jolt-command', async (rawEvent) => {
+  evtSource?.addEventListener('jolt-command', async (rawEvent) => {
     let cmd;
     try {
       cmd = JSON.parse(rawEvent.data);
@@ -209,6 +223,13 @@ export function buildProbeBundle(sessionToken: string, options: JoltPluginOption
 
   // Public dev-time registration API for stores & 3D scene graphs
   window.__JOLT__ = {
+    ...(JOLT_STATIC_DEMO ? { _isStaticDemo: true } : {}),
+    openHud(open = true) {
+      const hud = document.querySelector('${JOLT_HUD_TAG}');
+      if (hud && typeof hud.setExpanded === 'function') {
+        hud.setExpanded(open);
+      }
+    },
     registerStore(name, config) {
       registeredStores.set(name, config);
       notifyHudUpdate();

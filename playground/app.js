@@ -1,127 +1,3 @@
-// Lightweight static-hosting fallback when playground runs without Jolt's Node server
-if (!window.__JOLT__) {
-  const staticStores = new Map();
-  let staticMocks = [];
-  let staticSceneGetter = null;
-  let staticSpotlightRestore = null;
-
-  const nativeFetch = window.fetch.bind(window);
-  window.fetch = async (input, init) => {
-    const url = typeof input === 'string' ? input : input instanceof Request ? input.url : String(input);
-    const method = ((init && init.method) || (input instanceof Request ? input.method : 'GET')).toUpperCase();
-    if (url.includes('/api/checkout') && method === 'POST') {
-      const mock = staticMocks.find((m) => m.active !== false && url.includes(m.urlPattern));
-      if (mock) {
-        return new Response(JSON.stringify(mock.responseBody), {
-          status: mock.status || 500,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-      let bodyObj = {};
-      try {
-        bodyObj = init && typeof init.body === 'string' ? JSON.parse(init.body) : {};
-      } catch {}
-      return new Response(
-        JSON.stringify({ ok: true, orderId: 'ORD-DEMO200', total: bodyObj.total ?? 38 }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      );
-    }
-    return nativeFetch(input, init);
-  };
-
-  function closeStaticSpotlight(restore) {
-    document.querySelectorAll('.jolt-static-backdrop, .jolt-static-card').forEach((n) => n.remove());
-    if (restore && typeof staticSpotlightRestore === 'function') {
-      staticSpotlightRestore();
-    }
-    staticSpotlightRestore = null;
-  }
-
-  window.__JOLT__ = {
-    _isStaticDemo: true,
-    registerStore(name, config) {
-      staticStores.set(name, config);
-      return () => staticStores.delete(name);
-    },
-    registerScene(getter) {
-      staticSceneGetter = getter;
-    },
-    setMocks(rules) {
-      staticMocks = Array.isArray(rules) ? rules : [];
-    },
-    recordStoreEvent() {},
-    triggerDigest() {
-      const storeOut = {};
-      for (const [k, v] of staticStores.entries()) {
-        storeOut[k] = { state: typeof v.getState === 'function' ? v.getState() : {}, actions: Object.keys(v.actions || {}) };
-      }
-      return {
-        timestamp: Date.now(),
-        url: window.location.pathname,
-        healthy: true,
-        stores: storeOut,
-        activeMocks: staticMocks,
-        webgl: staticSceneGetter ? { active: true, fps: 60, sceneNodes: staticSceneGetter() } : null,
-      };
-    },
-    showSpotlight(spec) {
-      if (!spec || typeof spec !== 'object') return;
-      closeStaticSpotlight(true);
-      const targetEl = spec.target ? document.querySelector(spec.target) : null;
-      if (targetEl && spec.previewCss) {
-        const saved = [];
-        for (const [prop, val] of Object.entries(spec.previewCss)) {
-          const cssProp = prop.replace(/([A-Z])/g, '-$1').toLowerCase();
-          saved.push([cssProp, targetEl.style.getPropertyValue(cssProp)]);
-          targetEl.style.setProperty(cssProp, String(val));
-        }
-        staticSpotlightRestore = () => {
-          for (const [p, oldVal] of saved) {
-            if (oldVal) targetEl.style.setProperty(p, oldVal);
-            else targetEl.style.removeProperty(p);
-          }
-        };
-      }
-      const backdrop = document.createElement('div');
-      backdrop.className = 'jolt-static-backdrop';
-      backdrop.addEventListener('click', () => closeStaticSpotlight(true));
-
-      const card = document.createElement('div');
-      card.className = 'jolt-static-card';
-      const rect = targetEl ? targetEl.getBoundingClientRect() : { left: window.innerWidth - 360, top: 120 };
-      card.style.left = `${Math.max(12, Math.min(window.innerWidth - 356, rect.left))}px`;
-      card.style.top = `${Math.max(12, Math.min(window.innerHeight - 190, rect.top > 180 ? rect.top - 150 : rect.top + 52))}px`;
-
-      const badge = document.createElement('span');
-      badge.className = 'jolt-static-badge';
-      badge.textContent = spec.variant === 'preview' ? 'CSS PREVIEW' : 'AGENT QUESTION';
-      const title = document.createElement('strong');
-      title.textContent = spec.title || 'Jolt Spotlight';
-      const msg = document.createElement('p');
-      msg.style.margin = '0';
-      msg.textContent = spec.message || '';
-
-      const actions = document.createElement('div');
-      actions.className = 'jolt-static-actions';
-      const cancelBtn = document.createElement('button');
-      cancelBtn.type = 'button';
-      cancelBtn.className = 'btn btn-secondary';
-      cancelBtn.textContent = spec.cancelLabel || '✕ Close';
-      cancelBtn.addEventListener('click', () => closeStaticSpotlight(true));
-
-      const confirmBtn = document.createElement('button');
-      confirmBtn.type = 'button';
-      confirmBtn.className = 'btn btn-primary';
-      confirmBtn.textContent = spec.confirmLabel || '✓ Confirm';
-      confirmBtn.addEventListener('click', () => closeStaticSpotlight(spec.keepPreviewOnConfirm === false));
-
-      actions.append(cancelBtn, confirmBtn);
-      card.append(badge, title, msg, actions);
-      document.body.append(backdrop, card);
-    },
-  };
-}
-
 import { initWebGLScene, createDefaultSceneNodes } from './webgl-scene.js';
 
 const PLAN_PRICES = { indie: 19, studio: 49, blue: 99 };
@@ -154,6 +30,16 @@ const els = {
   crashBtn: document.getElementById('btn-crash'),
   networkStatus: document.getElementById('network-status'),
   fetchDigestBtn: document.getElementById('btn-fetch-digest'),
+  openHudBtn: document.getElementById('btn-open-hud'),
+  hudShowcase: document.getElementById('hud-showcase'),
+  hudModeTabs: document.querySelectorAll('[data-hud-mode]'),
+  hudPreviewBadge: document.getElementById('hud-preview-badge'),
+  hudPreviewStatus: document.getElementById('hud-preview-status'),
+  hudPreviewStop: document.getElementById('hud-preview-stop'),
+  hudPreviewNet: document.getElementById('hud-preview-net'),
+  hudPreviewLoc: document.getElementById('hud-preview-loc'),
+  hudPreviewPrompt: document.getElementById('hud-preview-prompt'),
+  hudPreviewSignal: document.getElementById('hud-preview-signal'),
   demoTargetBtn: document.getElementById('btn-demo-target'),
   demoSpotlightBtn: document.getElementById('btn-demo-spotlight'),
   demoLoopBtn: document.getElementById('btn-demo-loop'),
@@ -781,6 +667,62 @@ if (els.demoSpotlightBtn) {
     }
   });
 }
+
+const HUD_PREVIEW_STATES = {
+  nominal: {
+    badge: 'NOMINAL',
+    status: 'Bridge Ready',
+    stopHidden: true,
+    net: '200 LIVE',
+    loc: 'src/App.tsx:71:9 · 118×34 · flex',
+    prompt: 'Make this checkout CTA indigo…',
+    signal: '[click] <button#btn-checkout> · ~280 tokens sent',
+  },
+  mock: {
+    badge: 'MOCK',
+    status: 'Network mock active',
+    stopHidden: true,
+    net: '500 MOCK',
+    loc: 'POST /api/checkout · chaos fault rule',
+    prompt: 'Keep button disabled while retrying…',
+    signal: '[fetch] POST /api/checkout -> 500 (mocked)',
+  },
+  live: {
+    badge: 'LIVE',
+    status: 'Listening for pins…',
+    stopHidden: false,
+    net: '200 LIVE',
+    loc: 'Alt+Click DOM or WebGL2 mesh…',
+    prompt: 'Hit Stop anytime to retake IDE chat',
+    signal: '[sse] npx jolt-mcp listen · awaiting pin',
+  },
+};
+
+if (els.openHudBtn) {
+  els.openHudBtn.addEventListener('click', () => {
+    window.__JOLT__?.openHud?.(true);
+  });
+}
+
+els.hudModeTabs.forEach((tab) => {
+  tab.addEventListener('click', () => {
+    const mode = tab.dataset.hudMode || 'nominal';
+    const cfg = HUD_PREVIEW_STATES[mode] || HUD_PREVIEW_STATES.nominal;
+    if (els.hudShowcase) els.hudShowcase.dataset.mode = mode;
+    els.hudModeTabs.forEach((btn) => {
+      const active = btn.dataset.hudMode === mode;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-selected', String(active));
+    });
+    if (els.hudPreviewBadge) els.hudPreviewBadge.textContent = cfg.badge;
+    if (els.hudPreviewStatus) els.hudPreviewStatus.textContent = cfg.status;
+    if (els.hudPreviewStop) els.hudPreviewStop.hidden = cfg.stopHidden;
+    if (els.hudPreviewNet) els.hudPreviewNet.textContent = cfg.net;
+    if (els.hudPreviewLoc) els.hudPreviewLoc.textContent = cfg.loc;
+    if (els.hudPreviewPrompt) els.hudPreviewPrompt.textContent = cfg.prompt;
+    if (els.hudPreviewSignal) els.hudPreviewSignal.textContent = cfg.signal;
+  });
+});
 
 syncUI();
 renderHighlightedJson(els.digestPreview, SAMPLE_DIGEST_PREVIEW);

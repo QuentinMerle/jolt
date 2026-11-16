@@ -61,6 +61,12 @@
               <path d="m4.5 9.5 3.5 3.5 3.5-3.5" />
             </svg>
           </a>
+          <button id="btn-open-hud" type="button" class="btn-hero-ghost btn-hero-hud">
+            <span>Open Live HUD</span>
+            <svg class="btn-bolt-svg" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M13.5 2L4.5 13.5H11.5L10.5 22L19.5 10.5H12.5L13.5 2Z" />
+            </svg>
+          </button>
           <span class="btn-hero-ghost">
             <kbd>Alt</kbd> + <kbd>Click</kbd> to pin DOM or 3D
           </span>
@@ -167,37 +173,62 @@
           </div>
         </div>
 
-        <!-- Isometric 3D Visual (LP style) -->
-        <div class="cell-visual" aria-hidden="true">
-          <svg class="mini-iso-svg" viewBox="0 0 500 176" fill="none">
-            <defs>
-              <linearGradient id="loc-slab" x1="28" y1="86" x2="154" y2="128" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#065f46" />
-                <stop offset="100%" stop-color="#10b981" />
-              </linearGradient>
-            </defs>
-            <g class="chip-float">
-              <path d="M35 90 L35 101 Q35 104 40 106 L84 126 Q92 130 100 126 L144 106 Q149 104 149 101 L149 90 L100 112 Q92 116 84 112 Z" fill="url(#loc-slab)" opacity="0.85" />
-              <path d="M100 64 L144 84 Q152 88 144 92 L100 112 Q92 116 84 112 L40 92 Q32 88 40 84 L84 64 Q92 60 100 64 Z" fill="#121624" stroke="#10b981" stroke-width="1.3" />
-              <text x="92" y="92" text-anchor="middle" fill="#6ee7b7" font-size="10" font-family="ui-monospace, monospace">Alt+Click</text>
-            </g>
+        <!-- Real <jolt-hud> UI Preview (interactive state preview) -->
+        <div class="hud-showcase" id="hud-showcase" data-mode="nominal">
+          <div class="hud-showcase-bar">
+            <span class="hud-showcase-caption">WHAT IT LOOKS LIKE IN YOUR BROWSER</span>
+            <div class="hud-mode-tabs" role="tablist" aria-label="HUD preview states">
+              <button type="button" class="hud-mode-tab is-active" role="tab" aria-selected="true" data-hud-mode="nominal">Nominal</button>
+              <button type="button" class="hud-mode-tab" role="tab" aria-selected="false" data-hud-mode="mock">Mock 500</button>
+              <button type="button" class="hud-mode-tab" role="tab" aria-selected="false" data-hud-mode="live">LIVE · Stop</button>
+            </div>
+          </div>
 
-            <line x1="154" y1="88" x2="252" y2="88" stroke="rgba(255,255,255,0.12)" stroke-width="1.4" />
-            <line x1="154" y1="88" x2="252" y2="88" stroke="#10b981" stroke-width="1.8" class="flow-line" />
-            <polyline points="246,84 252,88 246,92" stroke="#10b981" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-            <circle cx="0" cy="0" r="2.8" fill="#6ee7b7">
-              <animateMotion dur="2.3s" repeatCount="indefinite" path="M154,88 L252,88" />
-            </circle>
+          <div class="hud-mock-capsule">
+            <div class="hud-mock-top">
+              <div class="hud-mock-status-left">
+                <svg class="hud-mock-bolt" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M13.5 2L4.5 13.5H11.5L10.5 22L19.5 10.5H12.5L13.5 2Z" />
+                </svg>
+                <span id="hud-preview-badge" class="hud-mock-pill">NOMINAL</span>
+                <span id="hud-preview-status" class="hud-mock-title">Bridge Ready</span>
+              </div>
+              <div class="hud-mock-actions">
+                <span id="hud-preview-stop" class="hud-mock-stop" hidden>Stop</span>
+                <span class="hud-mock-icon" aria-hidden="true">⌖</span>
+                <span class="hud-mock-icon" aria-hidden="true">×</span>
+              </div>
+            </div>
 
-            <g class="stack-plate p2">
-              <path d="M380 20 L460 44 Q472 48 460 52 L380 76 Q368 80 356 76 L276 52 Q264 48 276 44 L356 20 Q368 16 380 20 Z" fill="#0d111d" stroke="rgba(255,255,255,0.12)" />
-              <text x="368" y="52" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="ui-monospace, monospace" text-decoration="line-through">retina-4mb.png</text>
-            </g>
-            <g class="stack-plate p3">
-              <path d="M380 98 L460 122 Q472 126 460 130 L380 154 Q368 158 356 154 L276 130 Q264 126 276 122 L356 98 Q368 94 380 98 Z" fill="#121624" stroke="#38bdf8" stroke-width="1.3" />
-              <text x="368" y="130" text-anchor="middle" fill="#7dd3fc" font-size="10" font-family="ui-monospace, monospace">index.html:115 · ~300 tok</text>
-            </g>
-          </svg>
+            <div class="hud-mock-metrics">
+              <div class="hud-mock-metric">
+                <span class="hud-mock-mlabel">GPU · WEBGL2</span>
+                <span class="hud-mock-mval">120 fps · 3dc</span>
+              </div>
+              <div class="hud-mock-metric">
+                <span class="hud-mock-mlabel">STATE · STORE</span>
+                <span class="hud-mock-mval">joltLab · 9k</span>
+              </div>
+              <div class="hud-mock-metric">
+                <span class="hud-mock-mlabel">NET · FETCH</span>
+                <span id="hud-preview-net" class="hud-mock-mval">200 LIVE</span>
+              </div>
+            </div>
+
+            <div class="hud-mock-target">
+              <span id="hud-preview-loc">src/App.tsx:71:9 · 118×34 · flex</span>
+            </div>
+
+            <div class="hud-mock-input-row">
+              <span id="hud-preview-prompt" class="hud-mock-prompt">Make this checkout CTA indigo…</span>
+              <span class="hud-mock-pin-key">PIN ↵</span>
+            </div>
+
+            <div class="hud-mock-signal">
+              <span class="hud-mock-dot"></span>
+              <span id="hud-preview-signal">[click] &lt;button#btn-checkout&gt; · ~280 tokens sent</span>
+            </div>
+          </div>
         </div>
 
         <div class="layout-demo-parent">
@@ -623,6 +654,7 @@
     </footer>
   </div>
 
+  <script type="module" src="./jolt-probe-demo.js"></script>
   <script type="module" src="./webgl-scene.js"></script>
   <script type="module" src="./app.js"></script>
 </body>

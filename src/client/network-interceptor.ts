@@ -4,11 +4,12 @@ import { JOLT_ROUTES } from '../shared/constants.ts';
  * Generates the fetch interceptor and real-time mock engine.
  * Allows agents to simulate HTTP 4xx/5xx/timeouts on the fly without backend edits.
  */
-export function buildNetworkInterceptorScript(enabled = true): string {
+export function buildNetworkInterceptorScript(enabled = true, staticDemo = false): string {
   return `
   let activeMockRules = [];
   const origFetch = window.fetch.bind(window);
   const mocksInterceptorEnabled = ${enabled};
+  const staticCheckoutDemo = ${staticDemo};
 
   function setNetworkMocks(rules) {
     activeMockRules = mocksInterceptorEnabled && Array.isArray(rules) ? rules.map((r) => ({ ...r })) : [];
@@ -85,6 +86,19 @@ export function buildNetworkInterceptorScript(enabled = true): string {
           'X-Jolt-Mock': matchedRule.id,
         },
       });
+    }
+
+    if (staticCheckoutDemo && method === 'POST' && url.includes('/api/checkout')) {
+      let bodyObj = {};
+      try {
+        bodyObj = init && typeof init.body === 'string' ? JSON.parse(init.body) : {};
+      } catch {}
+      const cleanPath = url.replace(window.location.origin, '');
+      pushFlightEvent('fetch', 'POST ' + cleanPath + ' -> 200 OK', undefined, { status: 200 });
+      return new Response(
+        JSON.stringify({ ok: true, orderId: 'ORD-DEMO200', total: bodyObj.total ?? 38 }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
     const startedAt = performance.now();

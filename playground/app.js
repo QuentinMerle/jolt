@@ -38,6 +38,7 @@ if (!window.__JOLT__) {
   }
 
   window.__JOLT__ = {
+    _isStaticDemo: true,
     registerStore(name, config) {
       staticStores.set(name, config);
       return () => staticStores.delete(name);
@@ -549,6 +550,10 @@ function renderHighlightedJson(preEl, value) {
 }
 
 els.fetchDigestBtn.addEventListener('click', async () => {
+  if (window.__JOLT__ && window.__JOLT__._isStaticDemo) {
+    renderHighlightedJson(els.digestPreview, window.__JOLT__.triggerDigest());
+    return;
+  }
   els.digestPreview.textContent = 'Querying /__jolt/digest…';
   try {
     const res = await fetch('/__jolt/digest');

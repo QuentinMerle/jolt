@@ -268,6 +268,22 @@ describe('CLI init (--write), Build dist/, Framework Transforms & Listening Hand
       assert.ok(out.includes('AGENTS.md'));
       assert.ok(fs.existsSync(path.join(tempCliDir, '.mcp.json')));
 
+      // Also verify symlink invocation (mirrors npm `node_modules/.bin/jolt-mcp`)
+      const symlinkDir = fs.mkdtempSync(path.join(os.tmpdir(), 'jolt-bin-symlink-'));
+      const symlinkBin = path.join(symlinkDir, 'jolt-mcp');
+      fs.symlinkSync(distCli, symlinkBin);
+      const symTargetDir = path.join(symlinkDir, 'app');
+      try {
+        const symOut = execFileSync(symlinkBin, ['init', '--write', '--dir', symTargetDir], {
+          encoding: 'utf8',
+        });
+        assert.ok(symOut.includes('AGENTS.md'));
+        assert.ok(fs.existsSync(path.join(symTargetDir, '.mcp.json')));
+        assert.ok(fs.existsSync(path.join(symTargetDir, 'AGENTS.md')));
+      } finally {
+        fs.rmSync(symlinkDir, { recursive: true, force: true });
+      }
+
       // Verify viewport field in bridge digest
       const digest = bridge.getDigest();
       assert.equal(digest.healthy, true);

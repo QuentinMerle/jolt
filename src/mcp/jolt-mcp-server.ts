@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import fs from 'node:fs';
 import path from 'node:path';
 import readline from 'node:readline';
 import { fileURLToPath } from 'node:url';
@@ -245,8 +246,17 @@ function startStdioLoop(): void {
   });
 }
 
-// Run CLI only when executed directly (not when imported by tests).
-const isMain = process.argv[1] && path.resolve(process.argv[1]) === path.resolve(THIS_FILE);
+function isExecutedAsMain(filePath: string): boolean {
+  if (!process.argv[1]) return false;
+  try {
+    return fs.realpathSync(process.argv[1]) === fs.realpathSync(filePath);
+  } catch {
+    return path.resolve(process.argv[1]) === path.resolve(filePath);
+  }
+}
+
+// Run CLI only when executed directly (including via npm .bin symlinks, not when imported by tests).
+const isMain = isExecutedAsMain(THIS_FILE);
 if (isMain) {
   if (process.argv.includes('init')) {
     printInitInstructions(process.argv);

@@ -86,8 +86,17 @@ export function startWaitForPinLoop(inboxPathOverride?: string): void {
   }, 150);
 }
 
+function isExecutedAsMain(filePath: string): boolean {
+  if (!process.argv[1]) return false;
+  try {
+    return fs.realpathSync(process.argv[1]) === fs.realpathSync(filePath);
+  } catch {
+    return path.resolve(process.argv[1]) === path.resolve(filePath);
+  }
+}
+
 const THIS_FILE = fileURLToPath(import.meta.url);
-const isMain = process.argv[1] && path.resolve(process.argv[1]) === path.resolve(THIS_FILE);
+const isMain = isExecutedAsMain(THIS_FILE);
 if (isMain) {
   startWaitForPinLoop();
 }

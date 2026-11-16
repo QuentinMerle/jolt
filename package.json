@@ -1,0 +1,61 @@
+{
+  "name": "vite-plugin-jolt",
+  "version": "0.1.0",
+  "description": "Jolt ⚡ — Local-First White-Box Dev Bridge between Vite/Node, Front-End Runtime (Stores/WebGL2/Network), and AI Agents via MCP.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./adapters": {
+      "types": "./dist/adapters/index.d.ts",
+      "import": "./dist/adapters/index.js"
+    }
+  },
+  "bin": {
+    "jolt-mcp": "./dist/mcp/jolt-mcp-server.js"
+  },
+  "files": [
+    "dist",
+    "skills",
+    "README.md",
+    "AGENTS.md",
+    "CONTRIBUTING.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node ./scripts/build.mjs",
+    "dev:playground": "node --experimental-strip-types ./playground/start-playground.ts",
+    "mcp": "node --experimental-strip-types ./src/mcp/jolt-mcp-server.ts",
+    "test": "node --experimental-strip-types --test ./tests/*.test.ts",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "keywords": [
+    "vite",
+    "mcp",
+    "agent",
+    "devtools",
+    "webgl",
+    "zustand",
+    "pinia",
+    "threejs",
+    "white-box",
+    "jolt"
+  ],
+  "license": "MIT",
+  "author": "Quentin Merle",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QuentinMerle/jolt.git"
+  },
+  "homepage": "https://github.com/QuentinMerle/jolt#readme",
+  "bugs": {
+    "url": "https://github.com/QuentinMerle/jolt/issues"
+  }
+}

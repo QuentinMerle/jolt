@@ -1,0 +1,19 @@
+# Dependencies & build outputs
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Local Jolt bridge runtime state
+.jolt/
+
+# Vite / dev caches & logs
+.vite/
+*.log
+npm-debug.log*
+
+# Environment & OS files
+.env
+.env.*
+!.env.example
+.DS_Store

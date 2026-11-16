@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jolt ⚡ — Local-First White-Box Dev Bridge for AI Agents</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="#" class="nav-brand">
+        <span class="nav-mark" aria-hidden="true">
+          <svg class="nav-bolt-svg" viewBox="0 0 24 24">
+            <path d="M13.5 2L4.5 13.5H11.5L10.5 22L19.5 10.5H12.5L13.5 2Z" />
+          </svg>
+        </span>
+        <span class="nav-name">JOLT</span>
+        <span class="nav-version">v0.1.0</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Prompt &amp; IPC</a>
+        <a href="#lab-chaos">Chaos E-Commerce</a>
+        <a href="#lab-webgl">WebGL2 3D</a>
+        <a href="https://github.com/QuentinMerle/jolt" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <button id="btn-fetch-digest" type="button" class="nav-cta">
+          Inspect Digest
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="frame-shell">
+    <!-- Split Editorial Hero -->
+    <header class="hero-grid">
+      <div class="hero-copy">
+        <div class="eyebrow">
+          <span class="eyebrow-dot" aria-hidden="true"></span>
+          <span>LOCAL-FIRST DEV TOOL · 0 BYTES IN PROD</span>
+        </div>
+        <h1>
+          Stop jumping between browser
+          <svg class="icon-bridge" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="and">
+            <path d="M3 5.5h17" />
+            <path d="m16.5 2 3.5 3.5-3.5 3.5" />
+            <path d="M21 12.5H4" />
+            <path d="m7.5 9-3.5 3.5 3.5 3.5" />
+          </svg>
+          IDE
+        </h1>
+        <p class="hero-sub">
+          Turn your AI agent into a true frontend sidekick. Pin an element (<code>Alt+Click</code>) or prompt your agent directly <strong>from the browser HUD</strong> — no heavy screenshots, no Alt+Tab, and hit <strong>Stop</strong> anytime to take back IDE chat control.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#features" class="btn-hero-primary">
+            <span>Explore Demos</span>
+            <svg class="icon-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M8 3v10" />
+              <path d="m4.5 9.5 3.5 3.5 3.5-3.5" />
+            </svg>
+          </a>
+          <span class="btn-hero-ghost">
+            <kbd>Alt</kbd> + <kbd>Click</kbd> to pin DOM or 3D
+          </span>
+        </div>
+
+        <div class="install-box" aria-label="Quick setup">
+          <div class="install-tabs" role="tablist" aria-label="Setup files">
+            <button type="button" class="install-tab is-active" role="tab" aria-selected="true" data-install-tab="vite">vite.config.ts</button>
+            <button type="button" class="install-tab" role="tab" aria-selected="false" data-install-tab="mcp">.mcp.json</button>
+            <button type="button" class="install-tab" role="tab" aria-selected="false" data-install-tab="agents">AGENTS.md</button>
+            <button id="btn-copy-install" type="button" class="install-copy-btn">Copy</button>
+          </div>
+          <pre id="install-code" class="install-code"><code><span class="tok-kw">import</span> <span class="tok-punc">{</span> <span class="tok-fn">vitePluginJolt</span> <span class="tok-punc">}</span> <span class="tok-kw">from</span> <span class="tok-str">'vite-plugin-jolt'</span><span class="tok-punc">;</span>
+<span class="tok-kw">export default</span> <span class="tok-punc">{</span> <span class="tok-key">plugins</span><span class="tok-punc">:</span> <span class="tok-punc">[</span><span class="tok-fn">vitePluginJolt</span><span class="tok-punc">()]</span> <span class="tok-punc">};</span></code></pre>
+        </div>
+      </div>
+
+      <div class="hero-diagram" aria-hidden="true">
+        <div class="diagram-glow"></div>
+        <svg class="iso-svg" viewBox="0 0 480 340" fill="none">
+          <defs>
+            <linearGradient id="jolt-slab-side" x1="20" y1="165" x2="176" y2="215" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#065f46" />
+              <stop offset="50%" stop-color="#10b981" />
+              <stop offset="100%" stop-color="#38bdf8" />
+            </linearGradient>
+            <linearGradient id="jolt-slab-top" x1="20" y1="120" x2="176" y2="210" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#171b28" />
+              <stop offset="100%" stop-color="#0c0e16" />
+            </linearGradient>
+            <linearGradient id="jolt-beam" x1="176" y1="172" x2="335" y2="172" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#10b981" />
+              <stop offset="55%" stop-color="#38bdf8" />
+              <stop offset="100%" stop-color="#10b981" stop-opacity="0.2" />
+            </linearGradient>
+          </defs>
+
+          <g class="chip-float">
+            <path
+              d="M22 167 L22 183 Q22 186 26 188 L98 224 Q106 228 114 224 L180 188 Q184 186 184 183 L184 167 L114 205 Q106 209 98 205 Z"
+              fill="url(#jolt-slab-side)"
+              opacity="0.9"
+            />
+            <path
+              d="M98 124 Q106 120 114 124 L180 158 Q188 162 180 167 L114 202 Q106 206 98 202 L26 167 Q18 162 26 158 Z"
+              fill="url(#jolt-slab-top)"
+              stroke="rgba(16, 185, 129, 0.55)"
+              stroke-width="1.3"
+            />
+            <ellipse cx="104" cy="163" rx="26" ry="15" fill="rgba(16, 185, 129, 0.1)" stroke="rgba(16, 185, 129, 0.4)" />
+            <path d="M107 151L96 164H103L101 174L112 161H105L107 151Z" fill="#10b981" />
+          </g>
+
+          <line x1="184" y1="170" x2="328" y2="170" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" />
+          <line x1="184" y1="170" x2="328" y2="170" stroke="url(#jolt-beam)" stroke-width="2" class="flow-line" />
+          <circle cx="0" cy="0" r="3" fill="#6ee7b7">
+            <animateMotion dur="2.8s" repeatCount="indefinite" path="M184,170 L328,170" />
+          </circle>
+
+          <g>
+            <rect x="206" y="154" width="102" height="32" rx="6" fill="#090a0f" stroke="rgba(16, 185, 129, 0.55)" stroke-width="1.2" />
+            <text x="257" y="174" text-anchor="middle" fill="#f8fafc" font-size="11" font-family="ui-monospace, monospace">.jolt / mcp</text>
+          </g>
+
+          <g class="iso-stack">
+            <g class="stack-plate p1">
+              <path d="M399 54 L445 74 Q454 78 445 82 L399 102 Q390 106 381 102 L335 82 Q326 78 335 74 L381 54 Q390 50 399 54 Z" fill="#10121b" stroke="rgba(255,255,255,0.12)" />
+              <text x="390" y="82" text-anchor="middle" fill="#64748b" font-size="10.5" font-family="ui-monospace, monospace">antigravity</text>
+            </g>
+            <g class="stack-plate p2">
+              <path d="M399 98 L445 118 Q454 122 445 126 L399 146 Q390 150 381 146 L335 126 Q326 122 335 118 L381 98 Q390 94 399 98 Z" fill="#10121b" stroke="rgba(255,255,255,0.14)" />
+              <text x="390" y="126" text-anchor="middle" fill="#94a3b8" font-size="10.5" font-family="ui-monospace, monospace">claude-code</text>
+            </g>
+            <g class="stack-plate p3">
+              <path d="M399 142 L445 162 Q454 166 445 170 L399 190 Q390 194 381 190 L335 170 Q326 166 335 162 L381 142 Q390 138 399 142 Z" fill="#121624" stroke="rgba(16, 185, 129, 0.55)" stroke-width="1.3" />
+              <text x="390" y="170" text-anchor="middle" fill="#6ee7b7" font-size="10.5" font-family="ui-monospace, monospace">cursor · mcp</text>
+            </g>
+            <g class="stack-plate p4">
+              <path d="M399 186 L445 206 Q454 210 445 214 L399 234 Q390 238 381 234 L335 214 Q326 210 335 206 L381 186 Q390 182 399 186 Z" fill="#10121b" stroke="rgba(255,255,255,0.14)" />
+              <text x="390" y="214" text-anchor="middle" fill="#94a3b8" font-size="10.5" font-family="ui-monospace, monospace">webgl2-3d</text>
+            </g>
+            <g class="stack-plate p5">
+              <path d="M399 230 L445 250 Q454 254 445 258 L399 278 Q390 282 381 278 L335 258 Q326 254 335 250 L381 230 Q390 226 399 230 Z" fill="#10121b" stroke="rgba(255,255,255,0.12)" />
+              <text x="390" y="258" text-anchor="middle" fill="#64748b" font-size="10.5" font-family="ui-monospace, monospace">stores &amp; css</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div class="electric-rail" aria-hidden="true"></div>
+    </header>
+
+    <!-- Architectural Feature + Showcase Grid -->
+    <main id="features" class="arch-grid">
+      <!-- Cell 1 (Half): Source Locator & Spotlight -->
+      <section class="arch-cell cell-half">
+        <div class="cell-head">
+          <div>
+            <span class="cell-kicker">01 · FRONTEND PROMPTING &amp; SPOTLIGHT</span>
+            <h2>Message your agent straight from the page</h2>
+            <p class="cell-desc">
+              Stop pasting 4 MB Retina screenshots or switching back to your editor. <kbd>Alt</kbd> + <kbd>Click</kbd> any component (or type directly inside the HUD <em>“Make this CTA indigo”</em>) with ~300 tokens of exact context. In return, your agent can ask questions or live-preview CSS via its <strong>Spotlight Popin</strong> before touching disk.
+            </p>
+          </div>
+        </div>
+
+        <!-- Isometric 3D Visual (LP style) -->
+        <div class="cell-visual" aria-hidden="true">
+          <svg class="mini-iso-svg" viewBox="0 0 500 176" fill="none">
+            <defs>
+              <linearGradient id="loc-slab" x1="28" y1="86" x2="154" y2="128" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#065f46" />
+                <stop offset="100%" stop-color="#10b981" />
+              </linearGradient>
+            </defs>
+            <g class="chip-float">
+              <path d="M35 90 L35 101 Q35 104 40 106 L84 126 Q92 130 100 126 L144 106 Q149 104 149 101 L149 90 L100 112 Q92 116 84 112 Z" fill="url(#loc-slab)" opacity="0.85" />
+              <path d="M100 64 L144 84 Q152 88 144 92 L100 112 Q92 116 84 112 L40 92 Q32 88 40 84 L84 64 Q92 60 100 64 Z" fill="#121624" stroke="#10b981" stroke-width="1.3" />
+              <text x="92" y="92" text-anchor="middle" fill="#6ee7b7" font-size="10" font-family="ui-monospace, monospace">Alt+Click</text>
+            </g>
+
+            <line x1="154" y1="88" x2="252" y2="88" stroke="rgba(255,255,255,0.12)" stroke-width="1.4" />
+            <line x1="154" y1="88" x2="252" y2="88" stroke="#10b981" stroke-width="1.8" class="flow-line" />
+            <polyline points="246,84 252,88 246,92" stroke="#10b981" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="0" cy="0" r="2.8" fill="#6ee7b7">
+              <animateMotion dur="2.3s" repeatCount="indefinite" path="M154,88 L252,88" />
+            </circle>
+
+            <g class="stack-plate p2">
+              <path d="M380 20 L460 44 Q472 48 460 52 L380 76 Q368 80 356 76 L276 52 Q264 48 276 44 L356 20 Q368 16 380 20 Z" fill="#0d111d" stroke="rgba(255,255,255,0.12)" />
+              <text x="368" y="52" text-anchor="middle" fill="#64748b" font-size="9.5" font-family="ui-monospace, monospace" text-decoration="line-through">retina-4mb.png</text>
+            </g>
+            <g class="stack-plate p3">
+              <path d="M380 98 L460 122 Q472 126 460 130 L380 154 Q368 158 356 154 L276 130 Q264 126 276 122 L356 98 Q368 94 380 98 Z" fill="#121624" stroke="#38bdf8" stroke-width="1.3" />
+              <text x="368" y="130" text-anchor="middle" fill="#7dd3fc" font-size="10" font-family="ui-monospace, monospace">index.html:115 · ~300 tok</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="layout-demo-parent">
+          <div class="layout-demo-info">
+            <strong>Interactive Popin &amp; direct targeting</strong>
+            <span>Click “Alt+Click Target” to simulate a pin, or run the full agent loop in one click</span>
+          </div>
+          <div class="demo-actions">
+            <button id="btn-demo-target" type="button" class="btn btn-secondary">
+              <span>Alt+Click Target</span>
+              <svg class="btn-bolt-svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M13.5 2L4.5 13.5H11.5L10.5 22L19.5 10.5H12.5L13.5 2Z" />
+              </svg>
+            </button>
+            <button id="btn-demo-spotlight" type="button" class="btn btn-primary">
+              <span>Test Agent Spotlight</span>
+              <svg class="btn-bolt-svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M13.5 2L4.5 13.5H11.5L10.5 22L19.5 10.5H12.5L13.5 2Z" />
+              </svg>
+            </button>
+            <button id="btn-demo-loop" type="button" class="btn btn-secondary">
+              <span>Run Full Loop</span>
+            </button>
+          </div>
+        </div>
+        <div id="demo-target-log" class="status-log" role="status" aria-live="polite" hidden></div>
+      </section>
+
+      <!-- Cell 2 (Half): Local-First Protocol & Digest Inspector -->
+      <section id="lab-digest" class="arch-cell cell-half">
+        <div class="cell-head">
+          <div>
+            <span class="cell-kicker">02 · LOCAL-FIRST · LIVE WATCH &amp; HANDOVER</span>
+            <h2>Your agent sees the real page — without locking you out</h2>
+            <p class="cell-desc">
+              No browser extension to maintain, no sandbox network popups: everything syncs over local <code>.jolt/</code> files and MCP. During an active watch session (<code>jolt-mcp listen</code>), the HUD enters <strong>LIVE</strong> mode — click <strong>Stop</strong> anytime to end listening and take back IDE control.
+            </p>
+          </div>
+        </div>
+
+        <div class="cell-visual" aria-hidden="true">
+          <svg class="mini-iso-svg" viewBox="0 0 500 132" fill="none">
+            <defs>
+              <linearGradient id="ipc-slab" x1="202" y1="64" x2="298" y2="104" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#0e7490" />
+                <stop offset="100%" stop-color="#10b981" />
+              </linearGradient>
+            </defs>
+            <g class="stack-plate p1">
+              <path d="M92 40 L138 62 Q146 66 138 70 L92 92 Q84 96 76 92 L30 70 Q22 66 30 62 L76 40 Q84 36 92 40 Z" fill="#10131e" stroke="rgba(56,189,248,0.45)" />
+              <text x="84" y="70" text-anchor="middle" fill="#7dd3fc" font-size="10" font-family="ui-monospace, monospace">Browser SSE</text>
+            </g>
+
+            <line x1="146" y1="66" x2="198" y2="66" stroke="#10b981" stroke-width="1.6" class="flow-line" />
+            <polyline points="193,62 199,66 193,70" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="0" cy="0" r="2.5" fill="#6ee7b7">
+              <animateMotion dur="2.2s" repeatCount="indefinite" path="M146,66 L199,66" />
+            </circle>
+
+            <g class="chip-float">
+              <path d="M205 66 L205 76 Q205 78 209 80 L243 97 Q250 101 257 97 L291 80 Q295 78 295 76 L295 66 L257 86 Q250 90 243 86 Z" fill="url(#ipc-slab)" opacity="0.9" />
+              <path d="M257 42 L291 60 Q298 64 291 68 L257 86 Q250 90 243 86 L209 68 Q202 64 209 60 L243 42 Q250 38 257 42 Z" fill="#121624" stroke="#10b981" stroke-width="1.3" />
+              <text x="250" y="68" text-anchor="middle" fill="#6ee7b7" font-size="10.5" font-family="ui-monospace, monospace">.jolt/</text>
+            </g>
+
+            <line x1="302" y1="66" x2="354" y2="66" stroke="#38bdf8" stroke-width="1.6" class="flow-line" />
+            <polyline points="307,62 301,66 307,70" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="0" cy="0" r="2.5" fill="#7dd3fc">
+              <animateMotion dur="2.2s" repeatCount="indefinite" path="M354,66 L301,66" />
+            </circle>
+
+            <g class="stack-plate p3">
+              <path d="M424 40 L470 62 Q478 66 470 70 L424 92 Q416 96 408 92 L362 70 Q354 66 362 62 L408 40 Q416 36 424 40 Z" fill="#10131e" stroke="rgba(16,185,129,0.45)" />
+              <text x="416" y="70" text-anchor="middle" fill="#6ee7b7" font-size="10" font-family="ui-monospace, monospace">Agent IDE</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="digest-panel">
+          <div class="digest-panel-bar">
+            <span class="digest-tab is-active">.jolt/digest.json</span>
+            <span class="digest-hint">Live runtime telemetry</span>
+          </div>
+          <pre id="digest-preview" class="digest-box"></pre>
+        </div>
+      </section>
+
+      <!-- Interlude 1: Browser, Framework & Agent Agnostic -->
+      <section class="chapter-band cell-full" aria-label="Agnostic architecture">
+        <h2>Your AI agent becomes<br />a true frontend sidekick.</h2>
+        <p>
+          Forget debugging plumbing: Chrome or Safari, React, Vue, Svelte or Vanilla, Cursor, Claude Code or Antigravity — Jolt stays local-first in dev with 0 bytes in production.
+        </p>
+        <div class="agnostic-pills">
+          <span class="agnostic-pill"><strong>Browsers</strong> · Chrome, Safari, Firefox</span>
+          <span class="agnostic-pill"><strong>Frameworks</strong> · React, Vue, Svelte, Vanilla</span>
+          <span class="agnostic-pill"><strong>AI Agents</strong> · Cursor, Claude Code, Antigravity</span>
+        </div>
+        <div class="electric-rail rail-delay-1" aria-hidden="true"></div>
+      </section>
+
+      <!-- Before / After & Safeguards (2 columns) -->
+      <section id="lab-benefits" class="arch-cell cell-half">
+        <div class="cell-head">
+          <div>
+            <span class="cell-kicker">CONCRETE GAINS · BEFORE / AFTER</span>
+            <h2>5× fewer tokens, zero guesswork</h2>
+          </div>
+        </div>
+        <div class="compare-grid">
+          <div class="compare-card is-before">
+            <span class="compare-tag">Without Jolt</span>
+            <ul>
+              <li>4 MB Retina screenshot (~1,500+ vision tokens)</li>
+              <li>3 back-and-forth prompts to describe the component &amp; file</li>
+              <li>Manual copy-paste of console stacks &amp; Vite build errors</li>
+            </ul>
+          </div>
+          <div class="compare-card is-after">
+            <span class="compare-tag">With Jolt ⚡</span>
+            <ul>
+              <li><code>Alt+Click</code> → <code>file:line:col</code> + React/Vue chain (~280 tokens)</li>
+              <li>Vite compile errors, console, A11y &amp; <code>viewport</code> included</li>
+              <li>Automatic secret redaction (tokens, API keys, cookies)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Game-Changers Adapters Cell -->
+      <section id="lab-adapters" class="arch-cell cell-half">
+        <div class="cell-head">
+          <div>
+            <span class="cell-kicker">PLUG &amp; PLAY ADAPTERS · STORES &amp; 3D</span>
+            <h2>Connect Zustand, Pinia, Redux or Three.js in 1 line</h2>
+            <p class="cell-desc">
+              Your agent inspects live state, dispatches actions (<code>jolt_mutate_runtime</code>), simulates network latency <code>delayMs</code>, or moves Three.js / R3F meshes with zero boilerplate.
+            </p>
+          </div>
+        </div>
+
+        <div class="install-box adapter-box" aria-label="Adapter examples">
+          <div class="install-tabs" role="tablist" aria-label="Jolt adapters">
+            <button type="button" class="install-tab is-active" role="tab" aria-selected="true" data-adapter-tab="zustand">Zustand</button>
+            <button type="button" class="install-tab" role="tab" aria-selected="false" data-adapter-tab="pinia">Pinia (Vue)</button>
+            <button type="button" class="install-tab" role="tab" aria-selected="false" data-adapter-tab="redux">Redux</button>
+            <button type="button" class="install-tab" role="tab" aria-selected="false" data-adapter-tab="three">Three.js / R3F</button>
+          </div>
+          <pre id="adapter-code" class="install-code"><code><span class="tok-kw">import</span> <span class="tok-punc">{</span> <span class="tok-fn">joltZustand</span> <span class="tok-punc">}</span> <span class="tok-kw">from</span> <span class="tok-str">'vite-plugin-jolt/adapters'</span><span class="tok-punc">;</span>
+<span class="tok-fn">joltZustand</span><span class="tok-punc">(</span><span class="tok-str">'cart'</span><span class="tok-punc">,</span> useCartStore<span class="tok-punc">);</span> <span class="tok-punc">// 0 bytes in prod</span></code></pre>
+        </div>
+      </section>
+
+      <!-- Cell 3 (Full Width): Chaos Mock & E-Commerce Checkout Simulation -->
+      <section id="lab-chaos" class="arch-cell cell-full">
+        <div class="full-split">
+          <div class="full-story">
+            <div class="cell-head">
+              <div>
+                <span class="cell-kicker">03 · LIVE FAILURE TESTING</span>
+                <h2>“Simulate an HTTP 500 response for me”</h2>
+                <p class="cell-desc">
+                  No need to build a throwaway mock server to verify an edge case. Ask your agent to inject a 500 failure on <code>POST /api/checkout</code>: you <strong>experience the failure live</strong> in the UI while the agent sees exactly how your app handles it — and fixes it on the spot.
+                </p>
+              </div>
+            </div>
+
+            <div class="cell-visual" aria-hidden="true">
+              <svg id="chaos-diagram" class="mini-iso-svg" viewBox="0 0 460 156" fill="none" data-mode="nominal">
+                <defs>
+                  <linearGradient id="chaos-slab-nominal" x1="168" y1="62" x2="292" y2="108" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#065f46" />
+                    <stop offset="100%" stop-color="#10b981" />
+                  </linearGradient>
+                  <linearGradient id="chaos-slab-warn" x1="168" y1="62" x2="292" y2="108" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#92400e" />
+                    <stop offset="100%" stop-color="#f59e0b" />
+                  </linearGradient>
+                  <linearGradient id="chaos-slab-err" x1="168" y1="62" x2="292" y2="108" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#881337" />
+                    <stop offset="100%" stop-color="#fb7185" />
+                  </linearGradient>
+                </defs>
+                <g class="stack-plate p1">
+                  <path d="M82 38 L124 58 Q132 62 124 66 L82 86 Q74 90 66 86 L24 66 Q16 62 24 58 L66 38 Q74 34 82 38 Z" fill="#10131e" stroke="rgba(56,189,248,0.45)" />
+                  <text x="74" y="66" text-anchor="middle" fill="#7dd3fc" font-size="10" font-family="ui-monospace, monospace">Agent MCP</text>
+                </g>
+
+                <line id="chaos-line-1" x1="132" y1="62" x2="175" y2="62" stroke="#10b981" stroke-width="1.6" class="flow-line chaos-flow-1" />
+                <polyline id="chaos-chev-1" points="170,58 176,62 170,66" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="chaos-flow-1" />
+                <circle id="chaos-dot-1" cx="0" cy="0" r="2.5" fill="#6ee7b7" class="chaos-dot-1">
+                  <animateMotion dur="2s" repeatCount="indefinite" path="M132,62 L176,62" />
+                </circle>
+
+                <g class="chip-float">
+                  <path id="chaos-mid-side" d="M181 62 L181 72 Q181 74 185 76 L223 93 Q230 97 237 93 L275 76 Q279 74 279 72 L279 62 L237 82 Q230 86 223 82 Z" fill="url(#chaos-slab-nominal)" opacity="0.88" />
+                  <path id="chaos-mid-top" d="M237 38 L275 56 Q282 60 275 64 L237 82 Q230 86 223 82 L185 64 Q178 60 185 56 L223 38 Q230 34 237 38 Z" fill="#121624" stroke="#10b981" stroke-width="1.3" />
+                  <text id="chaos-mid-label" x="230" y="64" text-anchor="middle" fill="#6ee7b7" font-size="10" font-family="ui-monospace, monospace">LIVE 200</text>
+                </g>
+
+                <line id="chaos-line-2" x1="282" y1="62" x2="325" y2="62" stroke="#10b981" stroke-width="1.6" class="flow-line chaos-flow-2" />
+                <polyline id="chaos-chev-2" points="320,58 326,62 320,66" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="chaos-flow-2" />
+                <circle id="chaos-dot-2" cx="0" cy="0" r="2.5" fill="#6ee7b7" class="chaos-dot-2">
+                  <animateMotion dur="2s" repeatCount="indefinite" path="M282,62 L326,62" />
+                </circle>
+
+                <g class="stack-plate p3">
+                  <path id="chaos-end-plate" d="M394 38 L436 58 Q444 62 436 66 L394 86 Q386 90 378 86 L336 66 Q328 62 336 58 L378 38 Q386 34 394 38 Z" fill="#10161e" stroke="rgba(16,185,129,0.5)" />
+                  <text id="chaos-end-label" x="386" y="66" text-anchor="middle" fill="#6ee7b7" font-size="10" font-family="ui-monospace, monospace">NOMINAL</text>
+                </g>
+
+                <rect x="16" y="112" width="428" height="30" rx="5" fill="#090a0f" stroke="rgba(255,255,255,0.09)" />
+                <text x="28" y="131" font-size="10" font-family="ui-monospace, monospace">
+                  <tspan id="chaos-tl-1-time" fill="#64748b">T-0ms</tspan>
+                  <tspan id="chaos-tl-1-evt" fill="#7dd3fc"> [standby]</tspan>
+                </text>
+                <path d="M132 127h12m-3.5-3 3.5 3-3.5 3" stroke="#64748b" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                <text x="154" y="131" font-size="10" font-family="ui-monospace, monospace">
+                  <tspan id="chaos-tl-2-time" fill="#64748b">route</tspan>
+                  <tspan id="chaos-tl-2-evt" fill="#6ee7b7"> [/checkout]</tspan>
+                </text>
+                <path d="M294 127h12m-3.5-3 3.5 3-3.5 3" stroke="#64748b" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                <text id="chaos-tl-3" x="316" y="131" fill="#6ee7b7" font-size="10" font-family="ui-monospace, monospace">[HTTP 200 ready]</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Realistic E-Commerce Checkout Storefront Widget -->
+          <div class="ecom-card">
+            <div class="ecom-header">
+              <div class="ecom-product">
+                <div class="ecom-thumb" aria-hidden="true">
+                  <svg class="nav-bolt-svg" viewBox="0 0 24 24">
+                    <path d="M13.5 2L4.5 13.5H11.5L10.5 22L19.5 10.5H12.5L13.5 2Z" />
+                  </svg>
+                </div>
+                <div>
+                  <strong>Acme Synth · Checkout</strong>
+                  <span>Audio plugin + preset bundle</span>
+                </div>
+              </div>
+              <span id="mock-badge" class="mono-pill">Live network</span>
+            </div>
+
+            <div class="order-box">
+              <div class="plan-pills" role="group" aria-label="License tier">
+                <button type="button" class="plan-btn is-active" data-plan="indie">Lite · $19</button>
+                <button type="button" class="plan-btn" data-plan="studio">Studio · $49</button>
+                <button type="button" class="plan-btn" data-plan="blue">Bundle · $99</button>
+              </div>
+
+              <div class="ecom-summary">
+                <div class="qty-row">
+                  <span>Seats</span>
+                  <div class="stepper">
+                    <button id="btn-qty-minus" type="button" class="btn-step" aria-label="Decrease">−</button>
+                    <strong id="qty-value" class="mono-val">2</strong>
+                    <button id="btn-qty-plus" type="button" class="btn-step" aria-label="Increase">+</button>
+                  </div>
+                </div>
+                <div class="ecom-total-row">
+                  <span>Total</span>
+                  <strong id="total-price" class="price-tag">$38</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="action-stack">
+              <button id="btn-checkout" type="button" class="btn btn-success" data-agent-id="btn-checkout">
+                Confirm &amp; Pay — POST /api/checkout
+              </button>
+              <div class="action-pair">
+                <button id="btn-toggle-mock" type="button" class="btn btn-warn">
+                  Enable Mock HTTP 500
+                </button>
+                <button id="btn-crash" type="button" class="btn btn-danger">
+                  Trigger JS Crash
+                </button>
+              </div>
+            </div>
+
+            <div id="network-status" class="status-log" role="status" aria-live="polite">
+              Waiting for checkout…
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interlude 2: GPU Telemetry Intro -->
+      <section class="chapter-band cell-full" aria-label="WebGL2 3D Intro">
+        <h2>Your GPU and 3D scene,<br />finally legible to your agent.</h2>
+        <p>
+          Stop guessing blindly why a 3D scene drops frames: inspect Three.js or WebGL2 meshes just as easily as HTML elements.
+        </p>
+        <div class="electric-rail rail-delay-2" aria-hidden="true"></div>
+      </section>
+
+      <!-- Cell 4 (Full Width Finale): WebGL2 & 3D Object Picking -->
+      <section id="lab-webgl" class="arch-cell cell-full cell-finale">
+        <div class="cell-head">
+          <div>
+            <span class="cell-kicker">04 · FINALE · SCENE GRAPH &amp; 3D PICKING</span>
+            <h2>Manipulate 3D objects just like HTML</h2>
+            <p class="cell-desc">
+              In a 3D or Three.js scene, screenshots never reveal draw call budgets or which mesh is slowing the frame. Hold <kbd>Alt</kbd> over the viewport to isolate <code>item-1</code>, <code>item-2</code>, or <code>item-3</code>: your agent reads FPS (including 1% low) and adjusts position or shaders safely.
+            </p>
+          </div>
+          <span id="webgl-badge" class="mono-pill">Initializing…</span>
+        </div>
+
+        <div class="finale-layout">
+          <div id="canvas-container" class="webgl-stage webgl-stage-finale">
+            <canvas id="jolt-webgl-canvas" aria-label="Interactive WebGL2 scene with 3 meshes"></canvas>
+          </div>
+
+          <div class="finale-sidebar">
+            <!-- Isometric 3D Picking Diagram -->
+            <div class="cell-visual" aria-hidden="true">
+              <svg class="mini-iso-svg" viewBox="0 0 360 154" fill="none">
+                <defs>
+                  <linearGradient id="gl-slab" x1="120" y1="68" x2="240" y2="118" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#0284c7" />
+                    <stop offset="100%" stop-color="#10b981" />
+                  </linearGradient>
+                </defs>
+                <g class="chip-float">
+                  <path d="M129 68 L129 79 Q129 81 134 83 L172 103 Q180 107 188 103 L226 83 Q231 81 231 79 L231 68 L188 90 Q180 94 172 90 Z" fill="url(#gl-slab)" opacity="0.88" />
+                  <path d="M188 42 L226 62 Q234 66 226 70 L188 90 Q180 94 172 90 L134 70 Q126 66 134 62 L172 42 Q180 38 188 42 Z" fill="#121624" stroke="#38bdf8" stroke-width="1.3" />
+                  <text x="180" y="70" text-anchor="middle" fill="#7dd3fc" font-size="10" font-family="ui-monospace, monospace">OrbitalTorus#2</text>
+                </g>
+                <rect x="114" y="28" width="132" height="86" rx="6" stroke="#10b981" stroke-width="1" stroke-dasharray="4 4" class="reticle-pulse" />
+                <text x="180" y="138" text-anchor="middle" fill="#6ee7b7" font-size="10" font-family="ui-monospace, monospace">120 fps · 3 drawCalls · 0 alloc</text>
+              </svg>
+            </div>
+
+            <div class="scene-nodes-bar scene-nodes-vertical" aria-label="3D objects exposed to Jolt">
+              <span id="node-pill-1" class="node-pill" data-color="cyan">CryoOctahedron [-1.85, 0.00, -4.60]</span>
+              <span id="node-pill-2" class="node-pill" data-color="emerald">OrbitalTorus [0.00, 0.00, -4.60]</span>
+              <span id="node-pill-3" class="node-pill" data-color="amber">SolarPrism [1.85, 0.00, -4.60]</span>
+            </div>
+
+            <div class="controls-col">
+              <label class="field-inline">
+                <span>Speed</span>
+                <input id="ctrl-speed" type="range" min="0" max="3" step="0.1" value="1.1" />
+                <output id="out-speed" class="mono-val">1.1×</output>
+              </label>
+
+              <label class="field-inline">
+                <span>Palette</span>
+                <select id="ctrl-palette">
+                  <option value="multi">Multi-spectrum (3D)</option>
+                  <option value="cyan">Ion Cyan</option>
+                  <option value="amber">Solar Amber</option>
+                  <option value="emerald">Emerald</option>
+                </select>
+              </label>
+
+              <label class="toggle-inline">
+                <span>Wireframe</span>
+                <input id="ctrl-wireframe" type="checkbox" />
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quickstart Final CTA -->
+      <section id="cta-quickstart" class="chapter-band cta-band cell-full" aria-label="Quickstart">
+        <span class="cell-kicker">OPEN SOURCE · MIT · CONTRIBUTIONS WELCOME</span>
+        <h2>Connect Jolt to your app in 30 seconds</h2>
+        <p>
+          Install the dev plugin and auto-generate your <code>AGENTS.md</code> and <code>.mcp.json</code> in one CLI command. Issues &amp; PRs welcome!
+        </p>
+        <div class="cta-command-row">
+          <code class="cta-cli">npm install -D vite-plugin-jolt &amp;&amp; npx jolt-mcp init --write</code>
+          <button id="btn-copy-cli" type="button" class="btn btn-primary">Copy command</button>
+        </div>
+        <div class="electric-rail rail-delay-2" aria-hidden="true"></div>
+      </section>
+    </main>
+
+    <!-- Architectural Footer -->
+    <footer class="site-footer">
+      <div class="electric-rail rail-delay-1" aria-hidden="true"></div>
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <div class="nav-brand">
+            <span class="nav-mark" aria-hidden="true">
+              <svg class="nav-bolt-svg" viewBox="0 0 24 24">
+                <path d="M13.5 2L4.5 13.5H11.5L10.5 22L19.5 10.5H12.5L13.5 2Z" />
+              </svg>
+            </span>
+            <span class="nav-name">JOLT</span>
+          </div>
+          <p class="footer-tagline">
+            Local-first White-Box Dev Bridge connecting your browser runtime and AI agents.
+            Zero runtime dependencies, 0 bytes in production.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Demos</h4>
+          <a href="#features">Prompt &amp; Spotlight</a>
+          <a href="#lab-digest">Local-First &amp; Digest</a>
+          <a href="#lab-chaos">Chaos E-Commerce</a>
+          <a href="#lab-webgl">WebGL2 3D Viewport</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>Compatibility</h4>
+          <span>MCP JSON-RPC &amp; .jolt/ IPC</span>
+          <span>Chrome · Safari · Firefox</span>
+          <span>Vite · Node 20+ · TypeScript</span>
+          <a href="https://github.com/QuentinMerle/jolt" target="_blank" rel="noopener noreferrer">GitHub · QuentinMerle/jolt</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>Jolt ⚡ · Open Source MIT · Contributions Welcome</span>
+        <span>Browser, Framework &amp; Agent Agnostic</span>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module" src="/webgl-scene.js"></script>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 
 **Local-First White-Box Dev Bridge** connecting your Vite/Node dev server, live browser runtime (DOM, React/Vue components, Zustand/Pinia/Redux stores, `window.fetch`, Three.js/WebGL2), and AI coding agents via `.jolt/` & MCP.
 
-> Zero runtime dependencies · `apply: 'serve'` (**0 bytes in production**) · Works in Chrome, Safari & Firefox · MIT Open Source
+> **54.1 KB** npm tarball · **0** dependencies · **~19.4 KB gzipped** dev probe (`apply: 'serve'` → **0 bytes in production**) · MIT Open Source
 
 ---
 
@@ -22,6 +22,7 @@ Jolt runs directly **inside your real dev browser tab** and streams structured w
 | WebGL2 / Three.js FPS (`1% low`), draw calls & 3D picking | ❌ | ❌ | ✅ |
 | Visual in-memory CSS preview before editing disk | ❌ | ❌ | ✅ (`Spotlight`) |
 | Browser → IDE prompting + 1-click `Stop` handover | ❌ | ❌ | ✅ (`<jolt-hud>`) |
+| Footprint & dependencies | — | Heavy Chromium / Playwright binary | **54.1 KB package · 0 deps · 0 B prod** |
 
 ---
 

@@ -2,7 +2,19 @@
 
 **Local-First White-Box Dev Bridge** connecting your Vite/Node dev server, live browser runtime (DOM, React/Vue components, Zustand/Pinia/Redux stores, `window.fetch`, Three.js/WebGL2), and AI coding agents via `.jolt/` & MCP.
 
-> **54.1 KB** npm tarball · **0** dependencies · **~19.4 KB gzipped** dev probe (`apply: 'serve'` → **0 bytes in production**) · MIT Open Source
+> **54.1 KB** npm tarball · **0** dependencies · **~19.4 KB gzipped** dev probe (`apply: 'serve'` → **0 bytes in production**) · **[Live Interactive Demo ↗](https://quentinmerle.github.io/jolt/)** · MIT Open Source
+
+![Jolt Architecture Schematic](https://raw.githubusercontent.com/QuentinMerle/jolt/main/docs/assets/jolt-architecture.jpg)
+
+---
+
+## In Action
+
+| React 19 + Zustand (`Alt+Click` → `src/App.tsx:71:9` + HTTP 404) | Interactive HUD & WebGL2 GPU Telemetry (`120 fps · 3dc`) |
+| --- | --- |
+| ![Jolt React + Zustand HUD](https://raw.githubusercontent.com/QuentinMerle/jolt/main/docs/assets/jolt-react-zustand.png) | ![Jolt WebGL2 3D Viewport](https://raw.githubusercontent.com/QuentinMerle/jolt/main/docs/assets/jolt-webgl-3d.png) |
+
+![Jolt Mock 500 & Floating HUD Preview](https://raw.githubusercontent.com/QuentinMerle/jolt/main/docs/assets/jolt-hud-mock.png)
 
 ---
 

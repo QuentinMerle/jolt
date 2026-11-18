@@ -4,7 +4,7 @@
 
 > **54.1 KB** npm tarball · **0** dependencies · **~19.4 KB gzipped** dev probe (`apply: 'serve'` → **0 bytes in production**) · **[Live Interactive Demo ↗](https://quentinmerle.github.io/jolt/)** · MIT Open Source
 
-![Jolt Architecture Schematic](https://raw.githubusercontent.com/QuentinMerle/jolt/main/docs/assets/jolt-architecture.jpg)
+![Jolt Architecture Schematic](https://raw.githubusercontent.com/QuentinMerle/jolt/main/docs/assets/jolt-architecture.jpg?v=2)
 
 ---
 
